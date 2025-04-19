@@ -4,7 +4,9 @@ pipeline {
         stage('Checkout') {
             steps {
                 sh 'cd /flask-app'
-                checkout scmGit(branches: [[name: 'main']], extensions: [], userRemoteConfigs: [[credentialsId: 'token', url: 'https://github.com/sfn02/flask-app.git']])
+                checkout scmGit(branches: [[name: 'main']],extensions: [], 
+                userRemoteConfigs: [[credentialsId: 'token', url: 'https://github.com/sfn02/flask-app.git']])
+                echo 'verifying changes'
                 sh 'cat requirements.txt'
                 }
         }
