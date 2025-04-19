@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                sh 'cd /flask-app'
+                checkout scmGit(branches: [[name: 'main']], extensions: [], userRemoteConfigs: [[credentialsId: 'token', url: 'https://github.com/sfn02/flask-app.git']])
+                sh 'cat requirements.txt'
+                }
+        }
+        stage ('Build'){
+            steps {
+                sh 'docker build -t flask_app .'
+            }
+        }
+        stage ('Test') {
+            steps {
+                echo 'cleaning up existing container ...'
+                sh 'docker stop flask_app'
+                sh 'docker rm flask_app'
+                sh 'docker run -d -p 5000:5000 --name flask_app flask_app'
+                sh 'docker exec flask_app pytest tests/'
+            }
+        }
+        stage('Deploy') {
+    steps {
+        echo "🚀 Deploying flask-app to production environment..."
+    }
+}
+
+    }
+}
